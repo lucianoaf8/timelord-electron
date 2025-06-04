@@ -1,0 +1,14 @@
+/* Theme-specific effects */
+.theme-matrix-green .time-text {
+  font-family: 'Courier New', monospace;
+}
+
+.theme-minimal-dark .logo-circle,
+.theme-light .logo-circle {
+  animation-duration: 60s; /* Slower rotation for minimal themes */
+}
+
+.theme-neon-purple .particle,
+.theme-matrix-green .particle {
+  animation-duration: 15s; /* Faster particles for intense themes */
+}

@@ -1,0 +1,45 @@
+/* Responsive design */
+@media (max-width: 500px) {
+  .title-text {
+    font-size: 18px;
+    letter-spacing: 0.2em;
+    margin: 0 10px;
+    gap: 6px;
+  }
+  
+  .title-main {
+    font-size: 18px;
+  }
+  
+  .title-emoji {
+    font-size: 20px;
+  }
+  
+  .time-text {
+    font-size: 36px;
+  }
+  
+  /* Keep buttons showing text on mobile too */
+  .control-button {
+    padding: 0 12px;
+    font-size: 11px;
+  }
+  
+  .controls-section {
+    gap: 8px; /* Closer spacing on mobile */
+  }
+
+  /* Extra small container adjustments */
+  .timer-section {
+    padding: 16px 20px;
+  }
+  
+  .sessions-section {
+    margin: 0 20px 12px;
+    padding: 16px;
+  }
+  
+  .controls-section {
+    margin: 0 20px 16px;
+  }
+}

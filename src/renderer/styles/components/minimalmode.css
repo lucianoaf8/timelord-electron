@@ -1,0 +1,7 @@
+/* Minimal mode styles */
+.minimal-mode .target-section-compact,
+.minimal-mode .toggles-section-inline,
+.minimal-mode .sessions-section,
+.minimal-mode .bottom-section {
+  display: none;
+}

@@ -1,0 +1,110 @@
+.timer-section {
+  position: relative; /* Crucial for absolute positioning of children if needed */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* This will center .timer-controls and .timer-display if they are direct children */
+  padding: 20px; /* Add some padding, adjust as needed */
+}
+
+.timer-display {
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column; /* Stack time-text and milliseconds-container vertically */
+  align-items: center; /* Center items horizontally */
+  position: relative; /* Enable relative positioning for absolute children */
+  min-height: 72px; /* Reserve space for time text + milliseconds */
+}
+
+.time-text {
+  font-family: var(--font-primary), var(--font-secondary), 'SF Mono', Consolas, monospace;
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--accent-primary);
+  text-shadow: 0 0 20px var(--neon-glow);
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.time-text.running {
+  animation: timePulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes timePulse {
+  0% { 
+    text-shadow: 0 0 20px var(--neon-glow);
+    transform: scale(1);
+  }
+  100% { 
+    text-shadow: 
+      0 0 30px var(--neon-glow),
+      0 0 50px var(--neon-glow);
+    transform: scale(1.005);
+  }
+}
+
+.milliseconds-container {
+  position: absolute;
+  top: 60px; /* Position below the time text */
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.milliseconds-container:not(.hidden) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.milliseconds-container.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.milliseconds-text {
+  font-family: var(--font-primary), var(--font-secondary), 'SF Mono', Consolas, monospace;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+/* Font size controls (A- / A+) */
+.timer-controls {
+  /* position: absolute; removed, will be centered by flex on .timer-section */
+  /* top: 10px; removed */
+  /* left: 10px; removed */
+  display: flex;
+  gap: 8px; /* Increased gap slightly */
+  margin-bottom: 10px; /* Space between A-/A+ and timer digits */
+  /* z-index: 10; probably not needed if positioning is static */
+}
+
+.font-control {
+  background-color: var(--button-secondary-bg, rgba(255, 255, 255, 0.05));
+  color: var(--button-secondary-fg, var(--text-secondary));
+  border: 1px solid var(--button-secondary-border, var(--border-color-light));
+  padding: 4px 8px;
+  border-radius: var(--border-radius-small, 4px);
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  line-height: 1;
+}
+
+.font-control:hover {
+  background-color: var(--button-secondary-bg-hover, rgba(255, 255, 255, 0.1));
+  color: var(--button-secondary-fg-hover, var(--text-primary));
+  border-color: var(--accent-primary-light, var(--accent-primary));
+}
+
+.font-control:active {
+  background-color: var(--button-secondary-bg-active, rgba(255, 255, 255, 0.15));
+  transform: translateY(1px);
+}

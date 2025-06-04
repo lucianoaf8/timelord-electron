@@ -1,0 +1,48 @@
+/* Target Section */
+.target-section {
+  margin: 0 24px 16px;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  transition: all 0.3s ease;
+}
+
+.target-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.target-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--warning-color);
+}
+
+.target-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-input label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.target-input input {
+  width: 60px;
+  height: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}

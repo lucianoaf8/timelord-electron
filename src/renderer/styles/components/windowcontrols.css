@@ -1,0 +1,55 @@
+.window-controls {
+  display: flex;
+  gap: 6px;
+  -webkit-app-region: no-drag; /* Allows clicking on controls within a draggable region */
+}
+
+.control-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 16px; /* Makes it circular */
+  font-size: 12px; /* Default font size, can be overridden */
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-app-region: no-drag; /* Ensure buttons are clickable */
+  /* Base colors - can be overridden by specific button styles */
+  background-color: var(--button-bg-idle, rgba(255, 255, 255, 0.1));
+  color: var(--button-fg-idle, var(--text-secondary, #cccccc));
+}
+
+.control-btn:hover {
+  background-color: var(--button-bg-hover, rgba(255, 255, 255, 0.2));
+  color: var(--button-fg-hover, var(--text-primary, #ffffff));
+}
+
+.control-btn:active {
+  background-color: var(--button-bg-active, rgba(255, 255, 255, 0.3));
+  transform: translateY(1px);
+}
+
+/* Specific styles for minimize button */
+#minimizeBtn {
+  font-size: 20px; /* '-' symbol might need to be larger/bolder */
+  font-weight: bold;
+  padding-bottom: 4px; /* Adjust vertical alignment of '-' symbol if needed */
+}
+
+/* Specific styles for close button */
+#closeBtn {
+  font-size: 18px; /* '✕' symbol */
+  font-weight: bold;
+}
+
+#closeBtn:hover {
+  background-color: var(--danger-color-bg-hover, rgba(230, 80, 80, 0.4));
+  color: var(--danger-color-fg-hover, #ffffff);
+}
+
+#closeBtn:active {
+  background-color: var(--danger-color-bg-active, rgba(200, 60, 60, 0.5));
+}

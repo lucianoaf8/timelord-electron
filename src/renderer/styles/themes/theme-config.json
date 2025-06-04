@@ -1,0 +1,91 @@
+{
+  "themes": {
+    "cyber-blue": {
+      "name": "Cyber Blue",
+      "displayName": "🌊 Cyber Blue",
+      "fonts": {
+        "primary": "Orbitron",
+        "secondary": "JetBrains Mono"
+      },
+      "colors": {
+        "bgPrimary": "#0c0c0c",
+        "bgSecondary": "#1a1a2e",
+        "bgTertiary": "#16213e",
+        "textPrimary": "#ffffff",
+        "textSecondary": "#e2e8f0",
+        "textMuted": "rgba(0, 200, 255, 0.6)",
+        "accentPrimary": "#00c8ff",
+        "accentSecondary": "#0080ff",
+        "successColor": "#00e5ff",
+        "successHover": "#00bcd4",
+        "dangerColor": "#ff1744",
+        "dangerHover": "#d50000",
+        "purpleColor": "#3f51b5",
+        "purpleHover": "#303f9f",
+        "pinkColor": "#e91e63",
+        "pinkHover": "#c2185b",
+        "warningColor": "#00bcd4",
+        "neonGlow": "rgba(0, 200, 255, 0.4)",
+        "particleColor": "rgba(0, 200, 255, 0.3)",
+        "gridColor": "rgba(0, 200, 255, 0.08)",
+        "borderColor": "rgba(0, 200, 255, 0.25)"
+      },
+      "effects": {
+        "particleCount": 50,
+        "glowIntensity": 0.4,
+        "animationSpeed": 1.0
+      }
+    },
+    "neon-purple": {
+      "name": "Neon Purple",
+      "displayName": "💜 Neon Purple",
+      "fonts": {
+        "primary": "Orbitron",
+        "secondary": "JetBrains Mono"
+      },
+      "colors": {
+        "bgPrimary": "#0a0a0f",
+        "bgSecondary": "#1a0f2e",
+        "bgTertiary": "#2d1b3d",
+        "textPrimary": "#ffffff",
+        "textSecondary": "#e2e8f0",
+        "textMuted": "rgba(186, 85, 255, 0.6)",
+        "accentPrimary": "#ba55ff",
+        "accentSecondary": "#9333ea",
+        "successColor": "#00e676",
+        "successHover": "#00c853",
+        "dangerColor": "#e91e63",
+        "dangerHover": "#ad1457",
+        "purpleColor": "#ba55ff",
+        "purpleHover": "#9333ea",
+        "pinkColor": "#ff4081",
+        "pinkHover": "#f50057",
+        "warningColor": "#ab47bc",
+        "neonGlow": "rgba(186, 85, 255, 0.5)",
+        "particleColor": "rgba(186, 85, 255, 0.4)",
+        "gridColor": "rgba(186, 85, 255, 0.1)",
+        "borderColor": "rgba(186, 85, 255, 0.3)"
+      },
+      "effects": {
+        "particleCount": 60,
+        "glowIntensity": 0.5,
+        "animationSpeed": 1.2
+      }
+    }
+  },
+  "defaultTheme": "cyber-blue",
+  "themeOrder": [
+    "cyber-blue",
+    "neon-purple",
+    "matrix-green",
+    "sunset-orange",
+    "minimal-dark",
+    "light",
+    "hal-red",
+    "tesseract-mode",
+    "stark-hud",
+    "vault-tec",
+    "monolith-white",
+    "tron-legacy"
+  ]
+}

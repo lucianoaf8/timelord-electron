@@ -1,0 +1,54 @@
+:root {
+  /* Base Variables */
+  --spacing-unit: 8px;
+  --border-radius: 8px;
+  --transition-duration: 0.3s;
+  --transition-timing: ease-in-out;
+
+  /* Typography */
+  --font-primary: var(--theme-font-primary, 'Orbitron');
+  --font-secondary: var(--theme-font-secondary, 'JetBrains Mono');
+  --font-size-base: 16px;
+  --font-size-sm: calc(var(--font-size-base) * 0.875);
+  --font-size-lg: calc(var(--font-size-base) * 1.25);
+  --font-size-xl: calc(var(--font-size-base) * 1.5);
+
+  /* Layout */
+  --window-width: 480px;
+  --window-height: 750px;
+  --header-height: 40px;
+  --timer-section-height: 200px;
+  --controls-section-height: 60px;
+
+  /* Animations */
+  --animation-speed: 0.3s;
+  --animation-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Theme Variables (will be overridden by theme-specific values) */
+  --bg-primary: #0c0c0c;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --accent-primary: #00c8ff;
+  --accent-secondary: #0080ff;
+  --success-color: #00e5ff;
+  --danger-color: #ff1744;
+  --warning-color: #00bcd4;
+  --neon-glow: rgba(0, 200, 255, 0.4);
+  --particle-color: rgba(0, 200, 255, 0.3);
+  --grid-color: rgba(0, 200, 255, 0.08);
+  --border-color: rgba(0, 200, 255, 0.25);
+  
+  /* Button Variables */
+  --button-secondary-bg: rgba(255, 255, 255, 0.08);
+  --button-secondary-fg: var(--text-secondary);
+  --button-secondary-border: var(--border-color);
+  --button-secondary-bg-hover: rgba(255, 255, 255, 0.15);
+  --button-secondary-fg-hover: var(--text-primary);
+  --button-secondary-bg-active: rgba(255, 255, 255, 0.2);
+  --accent-primary-light: var(--accent-primary);
+  --border-color-light: rgba(255, 255, 255, 0.2);
+  --border-radius-small: 6px;
+  --text-muted: rgba(255, 255, 255, 0.6);
+}

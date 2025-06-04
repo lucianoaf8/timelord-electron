@@ -1,0 +1,50 @@
+/* Inline Toggles Section - Add this to your styles.css */
+.toggles-section-inline {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 16px 24px 20px;
+  flex-wrap: wrap;
+}
+
+.toggle-card-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(15px);
+  min-width: 120px;
+}
+
+.toggle-card-inline:hover {
+  border-color: var(--accent-primary);
+}
+
+.toggle-card-inline .toggle-info {
+  flex: 1;
+}
+
+.toggle-card-inline .toggle-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Responsive behavior for small screens */
+@media (max-width: 400px) {
+  .toggles-section-inline {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .toggle-card-inline {
+    min-width: 140px;
+  }
+}

@@ -1,0 +1,101 @@
+/* Controls Section */
+.controls-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 0 24px 20px;
+}
+
+.control-button {
+  height: 44px;
+  border: none;
+  border-radius: 50px;
+  font-family: var(--font-primary), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  min-width: 80px;
+  gap: 6px;
+}
+
+.control-button .material-icons {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.control-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+
+.control-button:hover::before {
+  left: 100%;
+}
+
+/* Control buttons - ensure they use theme colors */
+.start-btn {
+  background: linear-gradient(135deg, var(--success-color), var(--success-hover)) !important;
+  color: #000000 !important;
+  font-weight: 800;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--success-color) 30%, transparent);
+  transition: all 0.3s ease;
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px color-mix(in srgb, var(--success-color) 50%, transparent);
+  filter: brightness(1.05);
+}
+
+.start-btn.running {
+  background: linear-gradient(135deg, var(--danger-color), var(--danger-hover)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--danger-color) 30%, transparent);
+}
+
+.start-btn.running:hover {
+  box-shadow: 0 0 25px color-mix(in srgb, var(--danger-color) 50%, transparent);
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, var(--purple-color), var(--purple-hover)) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--purple-color) 30%, transparent);
+  transition: all 0.3s ease;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px color-mix(in srgb, var(--purple-color) 50%, transparent);
+  filter: brightness(1.05);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, var(--pink-color), var(--pink-hover)) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 0 15px color-mix(in srgb, var(--pink-color) 30%, transparent);
+  transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px color-mix(in srgb, var(--pink-color) 50%, transparent);
+  filter: brightness(1.05);
+}

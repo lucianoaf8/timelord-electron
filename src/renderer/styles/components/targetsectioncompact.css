@@ -1,0 +1,71 @@
+/* Target Section Compact - Add this to your styles.css */
+.target-section-compact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 0 24px 16px;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  transition: all 0.3s ease;
+  flex-wrap: wrap;
+}
+
+.target-section-compact .target-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--warning-color);
+  white-space: nowrap;
+}
+
+.target-input-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-input-inline label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.target-input-inline input {
+  width: 60px;
+  height: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.target-input-inline input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-primary) 30%, transparent);
+}
+
+/* Responsive behavior */
+@media (max-width: 400px) {
+  .target-section-compact {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 0 20px 12px;
+    padding: 10px 12px;
+  }
+  
+  .target-input-inline {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: center;
+  }
+}

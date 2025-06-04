@@ -1,0 +1,35 @@
+.status-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.status-indicator {
+  font-size: 16px;
+  color: var(--accent-primary);
+  transition: all 0.3s ease;
+}
+
+.status-indicator.pulse {
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.status-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: 0.2em;
+  padding: 8px 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 25px;
+  background: var(--bg-tertiary);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}

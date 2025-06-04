@@ -1,0 +1,83 @@
+
+{
+    "name": "timelord-electron",
+    "version": "1.0.0",
+    "description": "A modern, modular timer application built with Electron",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron .",
+      "dev": "electron . --dev",
+      "build": "electron-builder",
+      "pack": "electron-builder --dir",
+      "dist": "electron-builder --publish=never",
+      "clean": "rimraf dist build",
+      "lint": "eslint . --ext .ts,.tsx",
+      "format": "prettier --write .",
+      "test": "jest",
+      "test:watch": "jest --watch"
+    },
+    "keywords": ["timer", "productivity", "electron", "desktop"],
+    "author": "Timelord Team",
+    "license": "MIT",
+    "devDependencies": {
+      "@types/node": "^20.8.0",
+      "@types/react": "^18.2.24",
+      "@types/react-dom": "^18.2.8",
+      "@typescript-eslint/eslint-plugin": "^6.0.0",
+      "@typescript-eslint/parser": "^6.0.0",
+      "css-loader": "^6.8.1",
+      "electron": "^27.0.0",
+      "electron-builder": "^24.6.4",
+      "eslint": "^8.51.0",
+      "eslint-config-prettier": "^9.1.0",
+      "eslint-plugin-react": "^7.33.2",
+      "jest": "^29.7.0",
+      "prettier": "^3.0.3",
+      "rimraf": "^5.0.5",
+      "style-loader": "^3.3.3",
+      "ts-loader": "^9.5.0",
+      "typescript": "^5.2.2",
+      "webpack": "^5.88.2",
+      "webpack-cli": "^5.1.4"
+    },
+    "dependencies": {
+      "electron-store": "^8.1.0",
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0"
+    },
+    "build": {
+      "appId": "com.timelord.timer",
+      "productName": "Timelord Timer",
+      "directories": {
+        "output": "dist"
+      },
+      "files": [
+        "main.js",
+        "preload.js",
+        "index.html",
+        "renderer.js",
+        "styles.css",
+        "assets/**/*"
+      ],
+      "mac": {
+        "category": "public.app-category.productivity",
+        "icon": "assets/icon.png"
+      },
+      "win": {
+        "target": "nsis",
+        "icon": "assets/icon.png"
+      },
+      "linux": {
+        "target": "AppImage",
+        "icon": "assets/icon.png"
+      }
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/your-org/timelord-electron.git"
+    },
+    "bugs": {
+      "url": "https://github.com/your-org/timelord-electron/issues"
+    },
+    "homepage": "https://github.com/your-org/timelord-electron#readme"
+  }

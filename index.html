@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timelord Timer</title>
+    <link rel="stylesheet" href="src/renderer/styles/base/variables.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/fonts.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/reset.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/base.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/animations.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/transitions.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/utilities.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/themeeffects.css">
+    <link rel="stylesheet" href="src/renderer/styles/base/responsive.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/background.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/titlebar.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/titletext.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/windowcontrols.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/themetoggle.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/timerdisplay.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/statusdisplay.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/targetsection.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/controls.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/toggles.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/sessions.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/bottom.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/themetooltip.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/minimalmode.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/minimalview.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/scrollbar.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/inlinetoggles.css">
+    <link rel="stylesheet" href="src/renderer/styles/components/targetsectioncompact.css">
+    <!-- Link to the remaining styles in the original styles.css file -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Material Icons for buttons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline';">
+</head>
+<body class="theme-cyber-blue">
+    <!-- Animated background -->
+    <div class="background" id="background"></div>
+    <div class="grid-overlay"></div>
+    
+    <!-- Main Container -->
+    <div id="app" class="app-container">
+        
+        <!-- Custom Title Bar -->
+        <div id="titleBar" class="title-bar" draggable="true">
+            <div class="title-content">
+                <div class="logo-container">
+                    <div class="logo-circle">
+                        <div class="logo-inner"></div>
+                    </div>
+                </div>
+                <div class="title-text">
+                    <span class="title-emoji">🧙‍♂️</span>
+                    <span class="title-main">TIMELORD</span>
+                    <span class="title-emoji">🤖</span>
+                </div>
+                <div class="window-controls">
+                    <button id="themeToggle" class="control-btn theme-btn" title="Cycle Theme (Ctrl+T)">🌊</button>
+                    <button id="minimizeBtn" class="control-btn minimize-btn" title="Minimize">–</button>
+                    <button id="closeBtn" class="control-btn close-btn" title="Close">✕</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Display Section -->
+        <div id="timerSection" class="timer-section">
+            <div class="timer-controls">
+                <button id="fontDecrease" class="font-control">A-</button>
+                <button id="fontIncrease" class="font-control">A+</button>
+            </div>
+            
+            <div id="timerDisplay" class="timer-display">
+                <div id="timeText" class="time-text">00:00:00</div>
+                <div id="millisecondsContainer" class="milliseconds-container hidden">
+                    <div id="millisecondsText" class="milliseconds-text">000 ms</div>
+                </div>
+            </div>
+            
+            <div class="status-container">
+                <span id="statusIndicator" class="status-indicator">●</span>
+                <span id="statusText" class="status-text">READY</span>
+            </div>
+
+            <!-- Display Toggles - Right under timer display -->
+            <div id="togglesSection" class="toggles-section-inline">
+                <div class="toggle-card-inline">
+                    <div class="toggle-info">
+                        <div class="toggle-title">Milliseconds</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="millisecondsToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="toggle-card-inline">
+                    <div class="toggle-info">
+                        <div class="toggle-title">Seconds</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="secondsToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Timer Section - Compact -->
+        <div id="targetSection" class="target-section-compact">
+            <label class="switch">
+                <input type="checkbox" id="targetToggle">
+                <span class="slider"></span>
+            </label>
+            <span class="target-label">🎯 Target Timer</span>
+            <div class="target-input-inline">
+                <label for="targetMinutes">Minutes:</label>
+                <input type="number" id="targetMinutes" value="25" min="1" max="999">
+            </div>
+        </div>
+
+        <!-- Control Buttons with Icons -->
+        <div id="controlsSection" class="controls-section">
+            <button id="startBtn" class="control-button start-btn">
+                <span class="material-icons">play_arrow</span>
+                START
+            </button>
+            <button id="resetBtn" class="control-button reset-btn">
+                <span class="material-icons">refresh</span>
+                RESET
+            </button>
+            <button id="saveBtn" class="control-button save-btn">
+                <span class="material-icons">save</span>
+                SAVE
+            </button>
+        </div>
+
+        <!-- Sessions Panel -->
+        <div id="sessionsSection" class="sessions-section">
+            <div class="sessions-header">
+                <span class="sessions-title">📊 Session History</span>
+                <button id="exportBtn" class="export-btn">Export CSV</button>
+            </div>
+            
+            <div id="sessionsStats" class="sessions-stats hidden">
+                <div id="statsText" class="stats-text"></div>
+            </div>
+            
+            <div id="sessionsList" class="sessions-list">
+                <div class="empty-sessions">
+                    <p>No sessions saved yet.</p>
+                    <p>Press SAVE to record current time.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div id="bottomSection" class="bottom-section">
+            <button id="minimalModeBtn" class="minimal-mode-btn">Minimal Mode</button>
+        </div>
+    </div>
+
+    <!-- Minimal Mode Container -->
+    <div id="minimalContainer" class="minimal-container">
+        <div class="minimal-header">
+            <div class="minimal-controls-left">
+                <span id="minimalStatus" class="minimal-status ready">READY</span>
+            </div>
+            <div class="minimal-controls-right">
+                <button id="minimalStartBtn" class="minimal-btn start-icon" title="Start/Pause Timer">
+                    <span class="material-icons">play_arrow</span>
+                </button>
+                <button id="minimalResetBtn" class="minimal-btn reset-icon" title="Reset Timer">
+                    <span class="material-icons">refresh</span>
+                </button>
+                <button id="minimalSaveBtn" class="minimal-btn save-icon" title="Save Session">
+                    <span class="material-icons">save</span>
+                </button>
+                <button id="minimalExpandBtn" class="minimal-btn expand-icon" title="Expand to Full Mode">
+                    <span class="material-icons">open_in_full</span>
+                </button>
+            </div>
+        </div>
+        <div class="minimal-timer">
+            <div id="minimalTimeText" class="minimal-time-text">00:00:00</div>
+        </div>
+    </div>
+
+    <!-- Load Components in Dependency Order -->
+    <script src="components/ThemeSystem.js"></script>
+    <script src="components/BackgroundComponent.js"></script>
+    <script src="components/TimerComponent.js"></script>
+    <script src="components/ButtonsComponent.js"></script>
+    <script src="components/TogglesComponent.js"></script>
+    <script src="components/ThemeToggleComponent.js"></script>
+    <script src="components/SessionHistoryComponent.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>

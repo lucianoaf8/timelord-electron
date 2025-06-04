@@ -1,0 +1,630 @@
+class TimelordRenderer {
+  constructor() {
+    this.timerState = {
+      startTime: null,
+      elapsedTime: 0,
+      isRunning: false,
+      targetTime: 0,
+      targetEnabled: false,
+      targetReached: false,
+      showMilliseconds: false,
+      showSeconds: true,
+      fontSize: 48,
+      theme: 'dark',
+      isMinimal: false
+    };
+
+    this.sessions = [];
+    this.updateInterval = null;
+    this.pulseInterval = null;
+    this.audioContext = null;
+    this.particles = [];
+
+    this.init();
+  }
+
+  async init() {
+    await this.loadSettings();
+    await this.loadSessions();
+    this.setupUI();
+    this.bindEvents();
+    this.setupMenuHandlers();
+    
+    // Wait a bit for DOM to be ready
+    setTimeout(() => {
+      this.createParticles();
+    }, 100);
+    
+    this.updateDisplay();
+    this.updateSessionsDisplay();
+    
+    // Apply loaded settings
+    this.applyTheme();
+    this.applyFontSize();
+    this.updateToggles();
+  }
+
+  createParticles() {
+    const background = document.getElementById('background');
+    if (!background) return;
+
+    const particleCount = 50; // Increased count like original
+
+    // Clear existing particles
+    background.innerHTML = '';
+    this.particles = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      
+      // Random horizontal position across full viewport
+      particle.style.left = Math.random() * 100 + 'vw';
+      
+      // Staggered animation start time
+      particle.style.animationDelay = Math.random() * 20 + 's';
+      
+      // Varied animation duration like original (15-25 seconds)
+      particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+      
+      // Random size variation (1-3px like original)
+      const size = 1 + Math.random() * 2;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      
+      background.appendChild(particle);
+      this.particles.push(particle);
+    }
+  }
+
+  async loadSettings() {
+    try {
+      const settings = await window.electronAPI.loadSettings();
+      this.timerState = { ...this.timerState, ...settings };
+    } catch (error) {
+      console.error('Failed to load settings:', error);
+    }
+  }
+
+  async saveSettings() {
+    try {
+      const settings = {
+        theme: this.timerState.theme,
+        fontSize: this.timerState.fontSize,
+        showMilliseconds: this.timerState.showMilliseconds,
+        showSeconds: this.timerState.showSeconds,
+        isMinimal: this.timerState.isMinimal
+      };
+      await window.electronAPI.saveSettings(settings);
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+    }
+  }
+
+  async loadSessions() {
+    try {
+      this.sessions = await window.electronAPI.loadSessions() || [];
+    } catch (error) {
+      console.error('Failed to load sessions:', error);
+      this.sessions = [];
+    }
+  }
+
+  async saveSessions() {
+    try {
+      await window.electronAPI.saveSessions(this.sessions);
+    } catch (error) {
+      console.error('Failed to save sessions:', error);
+    }
+  }
+
+  setupUI() {
+    // Cache DOM elements
+    this.elements = {
+      app: document.getElementById('app'),
+      titleBar: document.getElementById('titleBar'),
+      timeText: document.getElementById('timeText'),
+      millisecondsContainer: document.getElementById('millisecondsContainer'),
+      millisecondsText: document.getElementById('millisecondsText'),
+      statusIndicator: document.getElementById('statusIndicator'),
+      statusText: document.getElementById('statusText'),
+      startBtn: document.getElementById('startBtn'),
+      resetBtn: document.getElementById('resetBtn'),
+      saveBtn: document.getElementById('saveBtn'),
+      themeToggle: document.getElementById('themeToggle'),
+      minimizeBtn: document.getElementById('minimizeBtn'),
+      closeBtn: document.getElementById('closeBtn'),
+      fontDecrease: document.getElementById('fontDecrease'),
+      fontIncrease: document.getElementById('fontIncrease'),
+      targetToggle: document.getElementById('targetToggle'),
+      targetMinutes: document.getElementById('targetMinutes'),
+      millisecondsToggle: document.getElementById('millisecondsToggle'),
+      secondsToggle: document.getElementById('secondsToggle'),
+      sessionsList: document.getElementById('sessionsList'),
+      sessionsStats: document.getElementById('sessionsStats'),
+      statsText: document.getElementById('statsText'),
+      exportBtn: document.getElementById('exportBtn'),
+      minimalModeBtn: document.getElementById('minimalModeBtn')
+    };
+  }
+
+  bindEvents() {
+    // Timer controls
+    this.elements.startBtn.addEventListener('click', () => this.toggleTimer());
+    this.elements.resetBtn.addEventListener('click', () => this.resetTimer());
+    this.elements.saveBtn.addEventListener('click', () => this.saveSession());
+
+    // Window controls
+    this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
+    this.elements.minimizeBtn.addEventListener('click', () => window.electronAPI.minimizeWindow());
+    this.elements.closeBtn.addEventListener('click', () => window.electronAPI.closeWindow());
+
+    // Font controls
+    this.elements.fontDecrease.addEventListener('click', () => this.adjustFontSize(-4));
+    this.elements.fontIncrease.addEventListener('click', () => this.adjustFontSize(4));
+
+    // Target timer
+    this.elements.targetToggle.addEventListener('change', () => this.toggleTarget());
+    this.elements.targetMinutes.addEventListener('input', () => this.updateTargetTime());
+
+    // Display toggles
+    this.elements.millisecondsToggle.addEventListener('change', () => this.toggleMilliseconds());
+    this.elements.secondsToggle.addEventListener('change', () => this.toggleSeconds());
+
+    // Other controls
+    this.elements.exportBtn.addEventListener('click', () => this.exportSessions());
+    this.elements.minimalModeBtn.addEventListener('click', () => this.toggleMinimalMode());
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+    // Window drag
+    let isDragging = false;
+
+    this.elements.titleBar.addEventListener('mousedown', (e) => {
+      isDragging = true;
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+  }
+
+  setupMenuHandlers() {
+    window.electronAPI.onMenuAction((action) => {
+      switch (action) {
+        case 'new-session':
+          this.resetTimer();
+          break;
+        case 'export-sessions':
+          this.exportSessions();
+          break;
+        case 'toggle-minimal':
+          this.toggleMinimalMode();
+          break;
+        case 'toggle-theme':
+          this.toggleTheme();
+          break;
+        case 'toggle-timer':
+          this.toggleTimer();
+          break;
+        case 'reset-timer':
+          this.resetTimer();
+          break;
+        case 'save-session':
+          this.saveSession();
+          break;
+      }
+    });
+  }
+
+  handleKeyboard(e) {
+    switch (e.code) {
+      case 'Space':
+        e.preventDefault();
+        this.toggleTimer();
+        break;
+      case 'Enter':
+        e.preventDefault();
+        this.resetTimer();
+        break;
+      case 'KeyS':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.saveSession();
+        }
+        break;
+      case 'KeyM':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.toggleMinimalMode();
+        }
+        break;
+      case 'KeyT':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.toggleTheme();
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        window.electronAPI.closeWindow();
+        break;
+      case 'Equal':
+      case 'NumpadAdd':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.adjustFontSize(4);
+        }
+        break;
+      case 'Minus':
+      case 'NumpadSubtract':
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          this.adjustFontSize(-4);
+        }
+        break;
+    }
+  }
+
+  toggleTimer() {
+    if (this.timerState.isRunning) {
+      this.stopTimer();
+    } else {
+      this.startTimer();
+    }
+  }
+
+  startTimer() {
+    this.timerState.isRunning = true;
+    this.timerState.startTime = Date.now() - this.timerState.elapsedTime;
+    this.timerState.targetReached = false;
+
+    this.elements.startBtn.textContent = 'STOP';
+    this.elements.startBtn.classList.add('running');
+    
+    this.updateStatus('RUNNING');
+    this.startPulseAnimation();
+    this.playSound('start');
+    
+    this.updateInterval = setInterval(() => this.updateTimer(), 10); // Higher frequency like original
+  }
+
+  stopTimer() {
+    this.timerState.isRunning = false;
+    
+    this.elements.startBtn.textContent = 'START';
+    this.elements.startBtn.classList.remove('running');
+    
+    this.updateStatus('STOPPED');
+    this.stopPulseAnimation();
+    this.playSound('stop');
+    
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+      this.updateInterval = null;
+    }
+  }
+
+  resetTimer() {
+    this.timerState.isRunning = false;
+    this.timerState.elapsedTime = 0;
+    this.timerState.startTime = null;
+    this.timerState.targetReached = false;
+
+    this.elements.startBtn.textContent = 'START';
+    this.elements.startBtn.classList.remove('running');
+    
+    this.updateStatus('READY');
+    this.stopPulseAnimation();
+    this.playSound('reset');
+    
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+      this.updateInterval = null;
+    }
+    
+    this.updateDisplay();
+  }
+
+  saveSession() {
+    if (this.timerState.elapsedTime <= 0) return;
+
+    const now = new Date();
+    const session = {
+      date: now.toISOString().split('T')[0],
+      time: now.toTimeString().split(' ')[0],
+      duration: this.formatElapsedTime(this.timerState.elapsedTime, true),
+      rawSeconds: this.timerState.elapsedTime / 1000,
+      targetEnabled: this.timerState.targetEnabled,
+      targetTime: this.timerState.targetEnabled ? this.timerState.targetTime : null
+    };
+
+    this.sessions.unshift(session);
+    
+    if (this.sessions.length > 10) { // Match original limit
+      this.sessions = this.sessions.slice(0, 10);
+    }
+
+    this.saveSessions();
+    this.updateSessionsDisplay();
+    this.updateStatus('SAVED');
+    this.playSound('save');
+
+    // Visual feedback
+    setTimeout(() => {
+      if (!this.timerState.isRunning) {
+        this.updateStatus('READY');
+      } else {
+        this.updateStatus('RUNNING');
+      }
+    }, 2000);
+  }
+
+  updateTimer() {
+    if (!this.timerState.isRunning) return;
+
+    this.timerState.elapsedTime = Date.now() - this.timerState.startTime;
+    
+    // Check target
+    if (this.timerState.targetEnabled && 
+        !this.timerState.targetReached && 
+        this.timerState.elapsedTime >= this.timerState.targetTime) {
+      this.timerState.targetReached = true;
+      this.updateStatus('TARGET REACHED');
+      this.playSound('target');
+    }
+    
+    this.updateDisplay();
+  }
+
+  updateDisplay() {
+    const timeStr = this.formatElapsedTime(this.timerState.elapsedTime, false);
+    this.elements.timeText.textContent = timeStr;
+
+    if (this.timerState.showMilliseconds) {
+      const ms = Math.floor((this.timerState.elapsedTime % 1000) / 10); // Match original format
+      this.elements.millisecondsText.textContent = `${ms.toString().padStart(2, '0')} ms`;
+    }
+  }
+
+  formatElapsedTime(ms, includeMs = false) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const milliseconds = Math.floor((ms % 1000) / 100);
+
+    if (this.timerState.showSeconds) {
+      const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      return includeMs ? `${timeStr}.${milliseconds}` : timeStr;
+    } else {
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    }
+  }
+
+  updateStatus(text) {
+    this.elements.statusText.textContent = text;
+  }
+
+  startPulseAnimation() {
+    this.stopPulseAnimation();
+    this.elements.statusIndicator.classList.add('pulse');
+    this.elements.timeText.classList.add('running');
+  }
+
+  stopPulseAnimation() {
+    this.elements.statusIndicator.classList.remove('pulse');
+    this.elements.timeText.classList.remove('running');
+  }
+
+  toggleTheme() {
+    this.timerState.theme = this.timerState.theme === 'dark' ? 'light' : 'dark';
+    this.applyTheme();
+    this.saveSettings();
+  }
+
+  applyTheme() {
+    document.body.className = `theme-${this.timerState.theme}`;
+    this.elements.themeToggle.textContent = this.timerState.theme === 'dark' ? '🌙' : '☀️';
+    
+    // Recreate particles with new theme colors
+    setTimeout(() => this.createParticles(), 100);
+  }
+
+  adjustFontSize(delta) {
+    const newSize = Math.max(32, Math.min(80, this.timerState.fontSize + delta)); // Increased max size
+    if (newSize !== this.timerState.fontSize) {
+      this.timerState.fontSize = newSize;
+      this.applyFontSize();
+      this.saveSettings();
+    }
+  }
+
+  applyFontSize() {
+    this.elements.timeText.style.fontSize = `${this.timerState.fontSize}px`;
+  }
+
+  toggleTarget() {
+    this.timerState.targetEnabled = this.elements.targetToggle.checked;
+    this.updateTargetTime();
+  }
+
+  updateTargetTime() {
+    if (this.timerState.targetEnabled) {
+      const minutes = parseInt(this.elements.targetMinutes.value) || 25;
+      this.timerState.targetTime = minutes * 60 * 1000;
+    }
+  }
+
+  toggleMilliseconds() {
+    this.timerState.showMilliseconds = this.elements.millisecondsToggle.checked;
+    
+    if (this.timerState.showMilliseconds) {
+      this.elements.millisecondsContainer.classList.remove('hidden');
+    } else {
+      this.elements.millisecondsContainer.classList.add('hidden');
+    }
+    
+    this.saveSettings();
+  }
+
+  toggleSeconds() {
+    this.timerState.showSeconds = this.elements.secondsToggle.checked;
+    this.updateDisplay();
+    this.saveSettings();
+  }
+
+  updateToggles() {
+    this.elements.millisecondsToggle.checked = this.timerState.showMilliseconds;
+    this.elements.secondsToggle.checked = this.timerState.showSeconds;
+    
+    if (this.timerState.showMilliseconds) {
+      this.elements.millisecondsContainer.classList.remove('hidden');
+    } else {
+      this.elements.millisecondsContainer.classList.add('hidden');
+    }
+  }
+
+  toggleMinimalMode() {
+    this.timerState.isMinimal = !this.timerState.isMinimal;
+    
+    if (this.timerState.isMinimal) {
+      this.elements.app.classList.add('minimal-mode');
+      this.elements.minimalModeBtn.textContent = 'Full Mode';
+    } else {
+      this.elements.app.classList.remove('minimal-mode');
+      this.elements.minimalModeBtn.textContent = 'Minimal Mode';
+    }
+    
+    this.saveSettings();
+  }
+
+  updateSessionsDisplay() {
+    const container = this.elements.sessionsList;
+    
+    container.innerHTML = '';
+    
+    if (this.sessions.length === 0) {
+      container.innerHTML = `
+        <div class="empty-sessions">
+          <p>No sessions recorded yet</p>
+        </div>
+      `;
+      this.elements.sessionsStats.classList.add('hidden');
+      return;
+    }
+
+    // Show stats
+    const totalSeconds = this.sessions.reduce((sum, session) => sum + session.rawSeconds, 0);
+    const avgSeconds = totalSeconds / this.sessions.length;
+    const statsText = `📈 Total: ${this.formatDuration(totalSeconds)} | Avg: ${this.formatDuration(avgSeconds)} | Sessions: ${this.sessions.length}`;
+    
+    this.elements.statsText.textContent = statsText;
+    this.elements.sessionsStats.classList.remove('hidden');
+
+    this.sessions.forEach((session, index) => {
+      const sessionElement = document.createElement('div');
+      sessionElement.className = 'session-item';
+      
+      const mainText = `${(index + 1).toString().padStart(2, ' ')}. ${session.time} → ${session.duration}`;
+      let content = `<div class="session-main">${mainText}</div>`;
+      
+      if (session.targetEnabled && session.targetTime) {
+        const targetMinutes = session.targetTime / 60;
+        const reached = session.rawSeconds >= session.targetTime ? ' ✅' : '';
+        content += `<div class="session-target">🎯 Target: ${targetMinutes.toFixed(0)}min${reached}</div>`;
+      }
+      
+      sessionElement.innerHTML = content;
+      container.appendChild(sessionElement);
+    });
+  }
+
+  formatDuration(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${secs}s`;
+    } else {
+      return `${secs}s`;
+    }
+  }
+
+  async exportSessions() {
+    if (this.sessions.length === 0) {
+      alert('No sessions to export!');
+      return;
+    }
+
+    try {
+      const result = await window.electronAPI.exportSessionsCSV(this.sessions);
+      if (result.success && !result.cancelled) {
+        alert(`Sessions exported successfully to:\n${result.path}`);
+      } else if (result.error) {
+        alert(`Export failed: ${result.error}`);
+      }
+    } catch (error) {
+      alert(`Export failed: ${error.message}`);
+    }
+  }
+
+  playSound(type) {
+    try {
+      if (!this.audioContext) {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      switch (type) {
+        case 'start':
+          oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+          oscillator.stop(this.audioContext.currentTime + 0.1);
+          break;
+        case 'stop':
+          oscillator.frequency.setValueAtTime(600, this.audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+          oscillator.stop(this.audioContext.currentTime + 0.1);
+          break;
+        case 'reset':
+          oscillator.frequency.setValueAtTime(400, this.audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
+          oscillator.stop(this.audioContext.currentTime + 0.15);
+          break;
+        case 'save':
+          oscillator.frequency.setValueAtTime(1000, this.audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.2);
+          oscillator.stop(this.audioContext.currentTime + 0.2);
+          break;
+        case 'target':
+          oscillator.frequency.setValueAtTime(1200, this.audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.5);
+          oscillator.stop(this.audioContext.currentTime + 0.5);
+          break;
+      }
+
+      oscillator.start();
+    } catch (error) {
+      console.log('Audio not available:', error);
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  new TimelordRenderer();
+});
