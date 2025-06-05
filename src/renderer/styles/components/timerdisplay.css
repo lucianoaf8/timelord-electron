@@ -7,7 +7,7 @@
 }
 
 .timer-display {
-  margin: 24px 0;
+  margin: 16px 0;
   display: flex;
   flex-direction: column; /* Stack time-text and milliseconds-container vertically */
   align-items: center; /* Center items horizontally */

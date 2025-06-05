@@ -1,7 +1,30 @@
-/* Minimal mode styles */
-.minimal-mode .target-section-compact,
-.minimal-mode .toggles-section-inline,
+/* Minimal mode styles - keep same window, just hide elements and reduce timer size */
+
+/* Hide sections in minimal mode */
+.minimal-mode .target-section,
+.minimal-mode .toggles-section,
 .minimal-mode .sessions-section,
 .minimal-mode .bottom-section {
   display: none;
+}
+
+/* Make timer text smaller and more focused in minimal mode */
+.minimal-mode .time-text {
+  font-size: 32px !important;
+  margin-bottom: 8px;
+}
+
+/* Hide font controls in minimal mode */
+.minimal-mode .timer-controls {
+  display: none;
+}
+
+/* Make controls section more compact in minimal mode */
+.minimal-mode .controls-section {
+  margin-bottom: 40px;
+}
+
+/* Reduce timer section padding in minimal mode */
+.minimal-mode .timer-section {
+  padding: 10px;
 }

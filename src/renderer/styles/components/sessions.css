@@ -1,7 +1,7 @@
 /* Sessions Section */
 .sessions-section {
   flex: 1;
-  margin: 0 24px 16px;
+  margin: 0 24px 8px;
   padding: 20px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);

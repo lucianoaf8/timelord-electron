@@ -17,8 +17,14 @@ class TimelordMain {
 
   async initializeApp() {
     // Fix GPU process issues
+    app.commandLine.appendSwitch('disable-gpu');
     app.commandLine.appendSwitch('disable-gpu-sandbox');
     app.commandLine.appendSwitch('disable-software-rasterizer');
+    app.commandLine.appendSwitch('disable-gpu-compositing');
+    app.commandLine.appendSwitch('disable-accelerated-2d-canvas');
+    app.commandLine.appendSwitch('disable-accelerated-jpeg-decoding');
+    app.commandLine.appendSwitch('disable-accelerated-mjpeg-decode');
+    app.commandLine.appendSwitch('disable-accelerated-video-decode');
     
     // Ensure data directory exists
     try {
@@ -332,22 +338,39 @@ class TimelordMain {
           this.originalSize = this.mainWindow.getSize();
           this.originalPosition = this.mainWindow.getPosition();
           
+          // Temporarily enable resizing to change window size
+          this.mainWindow.setResizable(true);
+          this.mainWindow.setMinimumSize(1, 1);
+          this.mainWindow.setMaximumSize(2000, 2000);
+          
           // Set minimal size (compact timer window)
-          this.mainWindow.setSize(300, 120);
+          this.mainWindow.setSize(300, 200);
           this.mainWindow.center();
+          
+          // Disable resizing again
           this.mainWindow.setResizable(false);
+          this.mainWindow.setMinimumSize(300, 200);
+          this.mainWindow.setMaximumSize(300, 200);
         } else {
+          // Temporarily enable resizing to restore size
+          this.mainWindow.setResizable(true);
+          this.mainWindow.setMinimumSize(1, 1);
+          this.mainWindow.setMaximumSize(2000, 2000);
+          
           // Restore original size
           if (this.originalSize) {
             this.mainWindow.setSize(this.originalSize[0], this.originalSize[1]);
           } else {
-            this.mainWindow.setSize(600, 800); // fallback to default
+            this.mainWindow.setSize(480, 750); // fallback to default
           }
           if (this.originalPosition) {
             this.mainWindow.setPosition(this.originalPosition[0], this.originalPosition[1]);
           }
-          this.mainWindow.setResizable(true);
-          this.mainWindow.center();
+          
+          // Restore original restrictions
+          this.mainWindow.setResizable(false);
+          this.mainWindow.setMinimumSize(480, 750);
+          this.mainWindow.setMaximumSize(480, 750);
         }
       }
     });

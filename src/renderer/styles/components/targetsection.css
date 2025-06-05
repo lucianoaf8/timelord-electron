@@ -1,6 +1,6 @@
 /* Target Section */
 .target-section {
-  margin: 0 24px 16px;
+  margin: 0 24px 8px;
   padding: 16px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);

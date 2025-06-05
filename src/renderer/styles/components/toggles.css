@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin: 0 24px 20px;
+  margin: 0 24px 12px;
 }
 
 .toggle-card {
