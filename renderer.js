@@ -84,22 +84,29 @@ class TimelordRenderer {
     // Minimal mode control buttons
     const minimalStartBtn = document.getElementById('minimalStartBtn');
     if (minimalStartBtn) {
-      minimalStartBtn.addEventListener('click', () => this.components.buttons?.toggleTimer());
+      minimalStartBtn.addEventListener('click', () => this.components.buttons?.handleStart());
     }
 
     const minimalResetBtn = document.getElementById('minimalResetBtn');
     if (minimalResetBtn) {
-      minimalResetBtn.addEventListener('click', () => this.components.buttons?.resetTimer());
+      minimalResetBtn.addEventListener('click', () => this.components.buttons?.handleReset());
     }
 
     const minimalSaveBtn = document.getElementById('minimalSaveBtn');
     if (minimalSaveBtn) {
-      minimalSaveBtn.addEventListener('click', () => this.components.buttons?.saveSession());
+      minimalSaveBtn.addEventListener('click', () => this.components.buttons?.handleSave());
     }
 
     const minimalExpandBtn = document.getElementById('minimalExpandBtn');
     if (minimalExpandBtn) {
       minimalExpandBtn.addEventListener('click', () => this.toggleMinimalMode());
+    }
+
+    const minimalCloseBtn = document.getElementById('minimalCloseBtn');
+    if (minimalCloseBtn) {
+      minimalCloseBtn.addEventListener('click', () => {
+        window.electronAPI?.send('close-window');
+      });
     }
   }
 
@@ -208,18 +215,23 @@ class TimelordRenderer {
     switch (event) {
       case 'timer-started':
         this.saveSettings();
+        if (this.timerState.isMinimal) this.syncMinimalTimer();
         break;
       case 'timer-stopped':
         this.saveSettings();
+        if (this.timerState.isMinimal) this.syncMinimalTimer();
         break;
       case 'timer-reset':
         this.saveSettings();
+        if (this.timerState.isMinimal) this.syncMinimalTimer();
         break;
       case 'target-reached':
         this.components.buttons?.playSound('target');
+        if (this.timerState.isMinimal) this.syncMinimalTimer();
         break;
       case 'settings-changed':
         this.saveSettings();
+        if (this.timerState.isMinimal) this.syncMinimalTimer();
         break;
     }
   }
@@ -272,14 +284,19 @@ class TimelordRenderer {
     this.timerState.isMinimal = !this.timerState.isMinimal;
     
     const app = document.getElementById('app');
+    const body = document.body;
     const minimalModeBtn = document.getElementById('minimalModeBtn');
     
     if (app && minimalModeBtn) {
       if (this.timerState.isMinimal) {
-        app.classList.add('minimal-mode');
+        // Use the minimal container approach
+        body.classList.add('minimal-mode');
         minimalModeBtn.textContent = 'Full Mode';
+        
+        // Sync the minimal timer with the main timer
+        this.syncMinimalTimer();
       } else {
-        app.classList.remove('minimal-mode');
+        body.classList.remove('minimal-mode');
         minimalModeBtn.textContent = 'Minimal Mode';
       }
     }
@@ -288,6 +305,23 @@ class TimelordRenderer {
     window.electronAPI.send('toggle-minimal-mode', this.timerState.isMinimal);
     
     this.saveSettings();
+  }
+
+  syncMinimalTimer() {
+    // Sync the minimal timer display with the main timer
+    const mainTimeText = document.getElementById('timeText');
+    const minimalTimeText = document.getElementById('minimalTimeText');
+    const mainStatus = document.getElementById('statusText');
+    const minimalStatus = document.getElementById('minimalStatus');
+    
+    if (mainTimeText && minimalTimeText) {
+      minimalTimeText.textContent = mainTimeText.textContent;
+    }
+    
+    if (mainStatus && minimalStatus) {
+      minimalStatus.textContent = mainStatus.textContent;
+      minimalStatus.className = 'minimal-status ' + mainStatus.className.replace('status-text', '').trim();
+    }
   }
 
   applyInitialSettings() {

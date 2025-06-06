@@ -30,8 +30,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  height: 32px;
+  margin-bottom: 12px;
+  height: 40px;
+  min-height: 40px;
 }
 
 .minimal-controls-left {
@@ -40,8 +41,11 @@
 
 .minimal-controls-right {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  min-width: fit-content;
 }
 
 /* Minimal Status */
@@ -83,14 +87,14 @@
 
 /* Minimal Control Buttons */
 .minimal-btn {
-  width: 28px;
-  height: 28px;
-  border: 1px solid var(--border-color);
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--border-color);
   background: var(--bg-tertiary);
   color: var(--text-primary);
-  border-radius: 14px;
+  border-radius: 16px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,6 +147,28 @@
 .minimal-btn.expand-icon:hover {
   background: color-mix(in srgb, var(--accent-primary) 20%, var(--bg-tertiary));
   box-shadow: 0 0 8px color-mix(in srgb, var(--accent-primary) 30%, transparent);
+}
+
+/* Close button for minimal mode */
+.minimal-close-btn {
+  padding: 8px 12px;
+  border: 2px solid var(--error-color);
+  background: var(--bg-tertiary);
+  color: var(--error-color);
+  border-radius: 18px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.minimal-close-btn:hover {
+  background: var(--error-color);
+  color: var(--bg-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--error-color) 40%, transparent);
 }
 
 /* Minimal Timer Display */
