@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain, dialog, shell } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, dialog, shell, screen } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 const os = require('os');
@@ -343,14 +343,23 @@ class TimelordMain {
           this.mainWindow.setMinimumSize(1, 1);
           this.mainWindow.setMaximumSize(2000, 2000);
           
+          const minimalWidth = 300;
+          const minimalHeight = 200;
+
           // Set minimal size (compact timer window)
-          this.mainWindow.setSize(300, 200);
-          this.mainWindow.center();
+          this.mainWindow.setSize(minimalWidth, minimalHeight);
           
-          // Disable resizing again
+          // Position to top-right
+          const primaryDisplay = screen.getPrimaryDisplay();
+          const { workArea } = primaryDisplay;
+          const x = workArea.x + workArea.width - minimalWidth;
+          const y = workArea.y; // Top of the work area
+          this.mainWindow.setPosition(x, y);
+          
+          // Disable resizing again and set fixed size for minimal mode
           this.mainWindow.setResizable(false);
-          this.mainWindow.setMinimumSize(300, 200);
-          this.mainWindow.setMaximumSize(300, 200);
+          this.mainWindow.setMinimumSize(minimalWidth, minimalHeight);
+          this.mainWindow.setMaximumSize(minimalWidth, minimalHeight);
         } else {
           // Temporarily enable resizing to restore size
           this.mainWindow.setResizable(true);

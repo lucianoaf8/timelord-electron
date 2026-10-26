@@ -27,6 +27,7 @@
 
 /* Minimal Header - Status and Controls */
 .minimal-header {
+  -webkit-app-region: drag;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -87,6 +88,7 @@
 
 /* Minimal Control Buttons */
 .minimal-btn {
+  -webkit-app-region: no-drag;
   width: 32px;
   height: 32px;
   border: 2px solid var(--border-color);
